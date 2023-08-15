@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="assets/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <title>Harmonia | Home</title>
+</head>
+<body>
+    <header></header>
+
+    <section id="search-section" class="py-4 d-none">
+        <div class="container">
+            <input type="search" name="search" id="search" placeholder="enter artist name or song" class="form-control" />
+        </div>
+    </section>
+
+    <div class="carousel"></div>
+
+
+    <div id="top-tracks" class="tracks">
+        <h2 class="top-tracks-title">Top tracks</h2>
+    </div>
+
+    <section id="songs" class="py-4">
+        <div class="container">     
+        </div>
+    </section>
+
+
+    <!--previous and next page buttons-->
+    <div class="container my-4">
+        <a href="#" class="btn btn-sm btn-outline-secondary" id="previous-page"><i class="bi bi-arrow-left"></i></a>
+
+       <span class="mx-2 current-page"></span>
+
+        <a href="#" class="btn btn-sm btn-outline-secondary" id="next-page"><i class="bi bi-arrow-right"></i></a>
+    </div>
+    
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script src="node_modules/axios/dist/axios.min.js"></script>
+
+
+
+
+
+
+    <script type="module">
+
+
+//headeri
+        import {Header} from './components/Header.js'
+        document.querySelector('header').innerHTML = Header();
+   
+
+// funksionialiteti i search button
+        document.querySelector('#search-btn').addEventListener('click', (e) => {
+            document.querySelector('#search-section').classList.toggle('d-none')
+            
+
+        })
+
+//shfaqja e slideve - carousel
+        import {Slides} from './components/Slides.js'
+        document.querySelector('.carousel').innerHTML = Slides();
+
+// shfaqja e Top Tracks
+        import{Songs} from './components/Songs.js'
+
+        axios.get(`https://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=93753165de7d6c17f3ec05776b2086fd&format=json`)
+        .then(resp=>{
+            if(resp.status ===200){
+                const songs = resp.data.tracks.track
+
+                document.querySelector('#songs > div').innerHTML = Songs(songs)
+
+                //current page
+                document.querySelector('.current-page').innerHTML = resp.data.tracks["@attr"].page;
+            }
+        })
+
+       
+      //prev page button
+let current_page = 1;
+
+document.querySelector('#previous-page').addEventListener('click', e => {
+    e.preventDefault();
+    if (current_page > 1) {
+        current_page--;
+        fetchData(current_page);
+        window.scrollTo('#top-track-title');
+        window.scrollTo(0, 0);
+    }
+});
+
+//next page button
+document.querySelector('#next-page').addEventListener('click', e => {
+    e.preventDefault();
+    if (current_page < 703168){
+        current_page++;
+    fetchData(current_page);
+    window.scrollTo(0, 0);
+    }
+});
+
+// Function to fetch data by page number
+function fetchData(page) {
+    axios.get(`https://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=93753165de7d6c17f3ec05776b2086fd&format=json&page=${page}`)
+        .then(resp => {
+            if (resp.status === 200) {
+                const songs = resp.data.tracks.track;
+                document.querySelector('#songs > div').innerHTML = Songs(songs);
+                document.querySelector('.current-page').innerHTML = resp.data.tracks["@attr"].page;
+            }
+        });
+}
+
+//Data fetch
+fetchData(current_page);
+
+
+//search songs 
+
+const search_input = document.querySelector('#search');
+
+search_input.addEventListener('keyup', async e => {
+    e.preventDefault();
+
+    switch (e.keyCode) {
+        case 13:
+             {
+                const response = await axios.get(`https://ws.audioscrobbler.com/2.0/?method=track.search&track=${e.target.value}&api_key=93753165de7d6c17f3ec05776b2086fd&format=json`);
+                
+                if (response.status === 200) {
+                    const searchResults = response.data.results.trackmatches.track;
+
+                    document.querySelector('#songs > div').innerHTML = Songs(searchResults);
+                    search_input.value = "";
+                     }
+            }
+            break;   
+    }
+});
+       
+   </script>
+</body>
+</html>

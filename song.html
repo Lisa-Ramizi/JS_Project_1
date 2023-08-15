@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+    
+    <title>Document</title>
+</head>
+<body>
+
+    <script type="module">
+        import {Header} from './components/Header.js'
+        document.querySelector('header').innerHTML = Header();
+    </script>
+    <header></header>
+
+
+    <div class="container">
+        <h1 class="mt-5">Song Information</h1>
+        <div id="song-details" class="song-details">
+            <h2>Loading...</h2>
+        </div>
+    </div>
+
+    <script>
+        // get parameters
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Get song information 
+        const artist = getQueryParam('artist');
+        const track = getQueryParam('track');
+
+        fetch(`https://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=93753165de7d6c17f3ec05776b2086fd&artist=${artist}&track=${track}&format=json`)
+            .then(response => response.json())
+            .then(data => {
+                const songDetails = document.getElementById('song-details');
+                songDetails.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-4 position-relative">
+                            <img src="${data.track.album.image[2]['#text']}" alt="Album Cover" class="song-image">
+                            
+                            <!-- Add to Favorites button aligned with the image -->
+                            <button id="add-to-favorites" class="btn btn-sm add-to-favorites">
+                                <i class="bi bi-suit-heart-fill"></i> Add to Favorites
+                            </button>
+                        </div>
+                        <div class="col-md-8 song-info">
+                            <h2 class="song-title">${data.track.name}</h2>
+                            <p class="song-artist">Artist: ${data.track.artist.name}</p>
+                            <p>Duration: ${data.track.duration}</p>
+                            <p>Listeners: ${data.track.listeners}</p>
+                            <p>Playcount: ${data.track.playcount}</p>
+                        </div>
+                    </div>
+                    <div class="song-description">
+                        <h4>About the Song</h4>
+                        <p>${data.track.wiki.summary}</p>
+                    </div>
+                `;
+
+                
+                const addToFavoritesButton = document.getElementById('add-to-favorites');
+
+                
+                addToFavoritesButton.addEventListener('click', () => {
+                    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+                    const song = {
+                        track: {
+                            name: data.track.name,
+                            artist: {
+                                name: data.track.artist.name
+                            }
+                        }
+                    };
+
+                    // Check if the song is in favorites
+                    const isSongInFavorites = favorites.some(favorite => 
+                    favorite.track.name === song.track.name &&
+                        favorite.track.artist.name === song.track.artist.name
+                    );
+
+                    if (isSongInFavorites) {
+                        // Remove song from favorites
+                        const updatedFavorites = favorites.filter(favorite => 
+                            !(favorite.track.name === song.track.name && favorite.track.artist.name === song.track.artist.name)
+                        );
+                        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+                        addToFavoritesButton.innerHTML = '<i class="bi bi-suit-heart-fill"></i> Add to Favorites';
+                    } else {
+                        // Add song to favorites
+                        favorites.push(song);
+                        localStorage.setItem('favorites', JSON.stringify(favorites));
+                        addToFavoritesButton.innerHTML = '<i class="bi bi-suit-heart-fill"></i> Remove from Favorites';
+                    }
+                });
+            });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+</html>
+

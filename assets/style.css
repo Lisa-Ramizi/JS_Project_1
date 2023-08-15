@@ -1,0 +1,127 @@
+.carousel-item{
+    height: 75vh;
+    width: 100%;
+}
+
+.chart-img{
+    height: 100%;
+}
+
+.artist-img{
+    width:150px;
+    align-self: center;
+}
+
+body{
+    background-color: #dfbbb1;
+    color: #595758;
+    font-family: 'Montserrat';
+}
+
+#song-cards{
+    color: #595758;
+}
+
+.chart-img-container{
+    height:120px;
+}
+
+
+/* song info css*/
+
+.song-details {
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.song-image {
+    max-width: 200px;
+    border-radius: 8px;
+}
+.song-info {
+    margin-left: 20px;
+    position: relative;
+}
+.song-title {
+    margin-bottom: 5px;
+}
+.song-artist {
+    color: #6c757d;
+}
+.song-description {
+    margin-top: 20px;
+}
+/* Adjust the Add to Favorites button position */
+.add-to-favorites {
+    position: absolute;
+    top: 0;
+    right: -200%; /* Adjusted to move it wayyy to the right */
+    transform: translate(-20%, 20%);
+    margin-left: 40px;
+    background-color: #883677; /* Setting the button color */
+    color: white;
+    transition: background-color 0.3s ease; /* Adding a smooth transition */
+}
+
+.add-to-favorites:hover {
+    background-color: #441151;
+    color: white;
+}
+
+.top-tracks-title{
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 2%;
+
+}
+
+.artists-container {
+    max-width: 800px;
+    margin: 5% auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.artist-info {
+    margin-top: 20px;
+    text-align: center;
+    color: #6c757d;
+}
+.artist-details {
+    text-align: center;
+    padding: 20px;
+}
+.artist-details h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+.artist-details p {
+    color: #6c757d;
+    line-height: 1.6;
+}
+.artist-details img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* Add this CSS code in your style.css or within a <style> tag in the HTML head */
+#search-btn {
+    color: #883677; /* Set the desired pink color */
+    border-color: #883677; /* Set border color to match text color */
+    background-color: transparent; /* Set background color to transparent */
+    transition: color 0.3s, border-color 0.3s; /* Add smooth transition effects */
+}
+
+#search-btn:hover {
+    color: #ff6b9d; /* Set a slightly lighter pink color on hover */
+    border-color: #ff6b9d; /* Set border color to match hover text color */
+    background-color: transparent; /* Maintain transparent background on hover */
+}
+
+
+
